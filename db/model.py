@@ -1,5 +1,7 @@
+
 class DBException(Exception):
     pass
+
 
 class DB:
     def __init__(self):
@@ -8,6 +10,7 @@ class DB:
 
     def add_product(self, new_product):
         self.db_products.append(new_product)
+        print('Добавлен')
 
     def change_product(self, new_product):
         self.db_products = [p for p in self.db_products if p.id != new_product.id]
@@ -17,10 +20,12 @@ class DB:
         try:
             return next(p for p in self.db_products if p.id == product_id)
         except Exception:
-            raise DBException(f"Product with id {product_id} doesn't exist")
+            return None
 
-    def list_all_products(self):
-        return self.db_products
+    def list_products(self, page, limit):
+        start = page * limit
+        end = start + limit
+        return self.db_products[start:end]
 
     def del_product(self, product_id):
         self.get_product(product_id)
@@ -39,9 +44,12 @@ class DB:
         except Exception:
             raise DBException(f"Order with id {order_id} doesn't exist")
 
-    def list_all_orders(self):
-        return self.db_orders
+    def list_orders(self, page, limit):
+        start = page * limit
+        end = start + limit
+        return self.db_orders[start:end]
 
     def del_order(self, order_id):
         self.get_order(order_id)
         self.db_orders = [o for o in self.db_orders if o.id != order_id]
+

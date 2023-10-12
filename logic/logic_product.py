@@ -2,25 +2,24 @@ import uuid
 
 from db.model import DB
 
-
 db = DB()
 
-
 class Product:
-    def __init__(self, id: str, name: str, price: float):
-        self.id = None
+    def __init__(self, name: str, price: float, id=None):
+        self.id = id
         self.name = name
         self.price = price
 
 
-def create_product(name, price):
-    id = str(uuid.uuid4())
+def create_product(id, name, price):
+    if id is None:
+        id = str(uuid.uuid4())
     new_product = Product(id, name, price)
     db.add_product(new_product)
 
 
-def show_all_products():
-    return db.list_all_products
+def show_products(page=0, limit=10):
+    return db.list_products(page=page, limit=limit)
 
 
 def show_product(product_id):

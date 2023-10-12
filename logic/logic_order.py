@@ -5,13 +5,13 @@ from logic.logic_product import db
 
 
 class Order:
-    def __init__(self, id, product_ids: List[str], total):
+    def __init__(self, product_ids: List[str], total=0, id=None):
         self.id = id
         self.product_ids = product_ids
         self.total = total
 
 
-def create_order(product_ids):
+def create_order(id, product_ids):
     id = str(uuid.uuid4())
     total = 0
     for id in product_ids:
@@ -21,8 +21,8 @@ def create_order(product_ids):
     db.add_order(new_order)
 
 
-def show_all_orders():
-    return db.list_all_orders
+def show_orders(page=0, limit=10):
+    return db.list_orders(page=page, limit=limit)
 
 
 def show_order(order_id):
