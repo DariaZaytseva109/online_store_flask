@@ -10,17 +10,17 @@ class DB:
 
     def add_product(self, new_product):
         self.db_products.append(new_product)
-        print('Добавлен')
+        print('Добавлен в базу', new_product.id)
+        print(self.db_products)
 
     def change_product(self, new_product):
         self.db_products = [p for p in self.db_products if p.id != new_product.id]
         self.db_products.append(new_product)
 
     def get_product(self, product_id):
-        try:
-            return next(p for p in self.db_products if p.id == product_id)
-        except Exception:
-            return None
+        print(product_id)
+        return next((p for p in self.db_products if str(p.id) == str(product_id)), None)
+
 
     def list_products(self, page, limit):
         start = page * limit

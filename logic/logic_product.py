@@ -11,11 +11,12 @@ class Product:
         self.price = price
 
 
-def create_product(id, name, price):
+def create_product(name, price, id=None):
     if id is None:
         id = str(uuid.uuid4())
-    new_product = Product(id, name, price)
+    new_product = Product(id=id, name=name, price=price)
     db.add_product(new_product)
+    return new_product
 
 
 def show_products(page=0, limit=10):
