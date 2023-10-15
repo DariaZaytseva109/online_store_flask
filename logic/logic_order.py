@@ -11,13 +11,14 @@ class Order:
         self.total = total
 
 
-def create_order(id, product_ids):
-    id = str(uuid.uuid4())
+def create_order(product_ids, id=None):
+    if id is None:
+        id = str(uuid.uuid4())
     total = 0
-    for id in product_ids:
-        pr = db.get_order(id)
+    for product_id in product_ids:
+        pr = db.get_product(product_id)
         total += pr.price
-    new_order = Order(id, product_ids, total)
+    new_order = Order(id=id, product_ids=product_ids, total=total)
     db.add_order(new_order)
 
 

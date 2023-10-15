@@ -1,7 +1,9 @@
 from flask import Flask, request
 from marshmallow import ValidationError
 
+from logic.logic_order import create_order, show_order, show_orders
 from logic.logic_product import show_product, show_products, create_product
+from view.order_schemas import OrderCreateDtoSchema, OrderSchema, OrderGetManyParams
 from view.product_schemas import ProductGetManyParams, ProductSchema, ProductCreateDtoSchema
 
 app = Flask(__name__)
@@ -9,9 +11,7 @@ app = Flask(__name__)
 
 @app.get('/api/v1/product/<id>/')
 def product_get_by_id_endpoint(id):
-    print("PROCESS get_by_id")
     product = show_product(id)
-
     if product is None:
         return {
             "error": 'Not found'
@@ -22,10 +22,8 @@ def product_get_by_id_endpoint(id):
 
 @app.get('/api/v1/product/')
 def product_get_list_endpoint():
-    print("PROCESS get_list")
     try:
         product_get_many_params = ProductGetManyParams().load(request.args)
-        print(request.args)
     except ValidationError as err:
         return err.messages, 400
 
@@ -37,7 +35,6 @@ def product_get_list_endpoint():
 
 @app.post("/api/v1/product/")
 def product_create_endpoint():
-    print(request.args)
     try:
         product_get_params = ProductCreateDtoSchema().load(request.args)
     except ValidationError as err:
@@ -48,14 +45,59 @@ def product_create_endpoint():
             name=product_get_params["name"],
             price=product_get_params["price"],
             id=product_get_params.get("id"))
-        print('Product created')
+    except Exception as e:
+        return {
+            "error": str(e)
+        }
+    return ProductSchema().dump(new_product)
+
+
+@app.post("/api/v1/order/")
+def order_create_endpoint():
+    print(request.is_json)
+    print(request.json)
+    try:
+        order_create_dto = OrderCreateDtoSchema().load(request.json)
+    except ValidationError as err:
+        return err.messages, 400
+
+    try:
+        order = create_order(
+            product_ids=order_create_dto['product_ids']
+        )
     except Exception as e:
         return {
             "error": str(e)
         }
 
-    return ProductSchema().dump(new_product)
+    return OrderSchema().dump(order)
 
+
+@app.get("/api/v1/order/")
+def order_get_many_endpoint():
+    try:
+        order_get_many_params = OrderGetManyParams().load(request.args)
+    except ValidationError as err:
+        return err.messages, 400
+
+    order = show_orders(
+        page=order_get_many_params['page'] - 1,
+        limit=order_get_many_params['limit'],
+    )
+
+    return OrderSchema(many=True).dump(order)
+
+
+@app.get("/api/v1/order/<id>/")
+def order_get_by_id_endpoint(id):
+    order = show_order(id)
+
+    if order is None:
+        return {
+            "error": 'Not found'
+        }, 404
+
+    return OrderSchema().dump(order)
 
 
 def run_server():

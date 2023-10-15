@@ -1,4 +1,3 @@
-
 class DBException(Exception):
     pass
 
@@ -10,7 +9,7 @@ class DB:
 
     def add_product(self, new_product):
         self.db_products.append(new_product)
-        print('Добавлен в базу', new_product.id)
+        print('DB: Добавлен в базу', new_product.id)
         print(self.db_products)
 
     def change_product(self, new_product):
@@ -18,9 +17,7 @@ class DB:
         self.db_products.append(new_product)
 
     def get_product(self, product_id):
-        print(product_id)
         return next((p for p in self.db_products if str(p.id) == str(product_id)), None)
-
 
     def list_products(self, page, limit):
         start = page * limit
@@ -28,21 +25,19 @@ class DB:
         return self.db_products[start:end]
 
     def del_product(self, product_id):
-        self.get_product(product_id)
         self.db_products = [p for p in self.db_products if p.id != product_id]
+        print('DB: Удален из базы', product_id)
 
     def add_order(self, new_order):
         self.db_orders.append(new_order)
-
+        print('DB: Добавлен в базу', new_order.id, "стоимость:", new_order.total)
+        
     def change_order(self, new_order):
         self.db_orders = [o for o in self.db_products if o.id != new_order.id]
         self.db_orders.append(new_order)
 
     def get_order(self, order_id):
-        try:
-            return next(o for o in self.db_orders if o.id == order_id)
-        except Exception:
-            raise DBException(f"Order with id {order_id} doesn't exist")
+        return next((o for o in self.db_orders if o.id == order_id), None)
 
     def list_orders(self, page, limit):
         start = page * limit
@@ -50,6 +45,5 @@ class DB:
         return self.db_orders[start:end]
 
     def del_order(self, order_id):
-        self.get_order(order_id)
         self.db_orders = [o for o in self.db_orders if o.id != order_id]
-
+        print('DB: Удален из базы', order_id)
