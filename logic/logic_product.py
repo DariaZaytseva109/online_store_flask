@@ -27,10 +27,5 @@ def show_product(product_id):
     return db.get_product(product_id)
 
 
-def update_product(product_id, **kwargs):
-    updated_product = Product(id=product_id, **kwargs)
-    db.change_product(updated_product)
-
-
 def delete_product(product_id):
     db.del_product(product_id)

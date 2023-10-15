@@ -20,6 +20,7 @@ def create_order(product_ids, id=None):
         total += pr.price
     new_order = Order(id=id, product_ids=product_ids, total=total)
     db.add_order(new_order)
+    return new_order
 
 
 def show_orders(page=0, limit=10):
@@ -28,15 +29,6 @@ def show_orders(page=0, limit=10):
 
 def show_order(order_id):
     return db.get_order(order_id)
-
-
-def update_order(order_id, product_ids: List[str]):
-    total = 0
-    for id in product_ids:
-        pr = db.get_order(id)
-        total += pr.price
-    updated_order = Order(order_id, product_ids, total)
-    db.change_order(updated_order)
 
 
 def delete_order(order_id):

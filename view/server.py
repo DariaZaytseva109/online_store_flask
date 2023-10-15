@@ -4,7 +4,7 @@ from marshmallow import ValidationError
 from logic.logic_order import create_order, show_order, show_orders
 from logic.logic_product import show_product, show_products, create_product
 from view.order_schemas import OrderCreateDtoSchema, OrderSchema, OrderGetManyParams
-from view.product_schemas import ProductGetManyParams, ProductSchema, ProductCreateDtoSchema
+from view.product_schemas import ProductGetManyParams, ProductSchema
 
 app = Flask(__name__)
 
@@ -28,7 +28,7 @@ def product_get_list_endpoint():
         return err.messages, 400
 
     page = int(product_get_many_params["page"]) - 1
-    limit = product_get_many_params["limit"]
+    limit = int(product_get_many_params["limit"])
     lst = show_products(page=page, limit=limit)
     return ProductSchema(many=True).dump(lst)
 
@@ -36,7 +36,7 @@ def product_get_list_endpoint():
 @app.post("/api/v1/product/")
 def product_create_endpoint():
     try:
-        product_get_params = ProductCreateDtoSchema().load(request.args)
+        product_get_params = ProductSchema().load(request.json)
     except ValidationError as err:
         return err.messages, 400
 
@@ -44,7 +44,7 @@ def product_create_endpoint():
         new_product = create_product(
             name=product_get_params["name"],
             price=product_get_params["price"],
-            id=product_get_params.get("id"))
+            id=product_get_params.get("id", None))
     except Exception as e:
         return {
             "error": str(e)

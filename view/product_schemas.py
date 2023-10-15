@@ -1,18 +1,12 @@
-from marshmallow import Schema, fields
-
-
-class ProductCreateDtoSchema(Schema):
-    id = fields.Int()
-    name = fields.String(required=True)
-    price = fields.Float(required=True)
+from marshmallow import Schema, fields, validate
 
 
 class ProductSchema(Schema):
     id = fields.String()
-    name = fields.String()
-    price = fields.Float()
+    name = fields.String(required=True, validate=validate.Length(min=3))
+    price = fields.Float(required=True, validate=validate.Range(min=1, max=300000))
 
 
 class ProductGetManyParams(Schema):
-    page = fields.Int(required=True)
-    limit = fields.Int(required=True)
+    page = fields.Int(required=True, validate=validate.Range(min=1))
+    limit = fields.Int(required=True, validate=validate.Range(min=3, max=20))
