@@ -9,7 +9,7 @@ class DB:
 
     def add_product(self, new_product):
         self.db_products.append(new_product)
-        print('DB: Добавлен в базу', new_product.id)
+        print('DB: Добавлен в базу новый продукт, ID:', new_product.id)
         print(self.db_products)
 
     def change_product(self, new_product):
@@ -26,12 +26,12 @@ class DB:
 
     def del_product(self, product_id):
         self.db_products = [p for p in self.db_products if p.id != product_id]
-        print('DB: Удален из базы', product_id)
+        print('DB: Удален из базы продукт ID:', product_id)
 
     def add_order(self, new_order):
         self.db_orders.append(new_order)
-        print('DB: Добавлен в базу', new_order.id, "стоимость:", new_order.total)
-        
+        print(f'DB: Добавлен в базу новый заказ №{new_order.id}, стоимость:{new_order.total}')
+
     def change_order(self, new_order):
         self.db_orders = [o for o in self.db_products if o.id != new_order.id]
         self.db_orders.append(new_order)
@@ -46,4 +46,4 @@ class DB:
 
     def del_order(self, order_id):
         self.db_orders = [o for o in self.db_orders if o.id != order_id]
-        print('DB: Удален из базы', order_id)
+        print('DB: Удален из базы заказ ID:', order_id)
